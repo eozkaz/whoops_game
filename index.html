@@ -256,6 +256,7 @@ select.t-select{background:var(--bg);color:var(--text);border:1px solid var(--bo
 #stealth-banner .sb-text{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:.12em;color:var(--gold);}
 body.stealth-mode #dart-svg-wrap,body.stealth-mode #dart-cover{display:none;}
 body.stealth-mode .quad{display:none;}
+body.stealth-mode #dart-area{background:#16102a;}
 
 /* Blind instruction */
 #blind-inst{position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:50;pointer-events:none;display:none;}
@@ -1932,6 +1933,15 @@ function showScreen(id){
   if(id==='dartboard'){
     document.getElementById('dart-svg-wrap').style.visibility='hidden';
     document.getElementById('dart-cover').style.visibility='hidden';
+    // Stealth: hide the regular board and wipe any stale content BEFORE the
+    // screen becomes visible, so nothing flashes while the patchwork is built.
+    if(S.throwStyle==='stealth'){
+      document.body.classList.add('stealth-mode');
+      for(let i=0;i<4;i++){const q=document.getElementById('quad-'+i);if(q)q.innerHTML='';}
+      const sv=document.getElementById('dart-svg');if(sv)sv.innerHTML='';
+    } else {
+      document.body.classList.remove('stealth-mode');
+    }
   }
   document.getElementById(id).classList.add('active');
   if(id==='dartboard'){
